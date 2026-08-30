@@ -3,28 +3,71 @@ require "DirectorClient"
 if SERVER then return end
 
 RegisterTrack( "MUS_KillEveryone_Start", "Music/KillEveryone/Start.wav" )
-RegisterTrack( "MUS_KillEveryone_1", "Music/KillEveryone/1.wav" )
-RegisterTrack( "MUS_KillEveryone_2", "Music/KillEveryone/2.wav" )
-RegisterTrack( "MUS_KillEveryone_3", "Music/KillEveryone/3.wav" )
-RegisterTrack( "MUS_KillEveryone_4", "Music/KillEveryone/4.wav" )
-RegisterTrack( "MUS_KillEveryone_5", "Music/KillEveryone/5.wav" )
-RegisterTrack( "MUS_KillEveryone_6", "Music/KillEveryone/6.wav" )
-RegisterTrack( "MUS_KillEveryone_7", "Music/KillEveryone/7.wav" )
-RegisterTrack( "MUS_KillEveryone_8", "Music/KillEveryone/8.wav" )
-RegisterTrack( "MUS_KillEveryone_9", "Music/KillEveryone/9.wav" )
+RegisterTrack( "MUS_KillEveryone_StartAlt", "Music/KillEveryone/StartAlt.wav" )
 RegisterTrack( "MUS_KillEveryone_End", "Music/KillEveryone/End.wav" )
 
-local tSongs = {
-	"MUS_KillEveryone_1",
-	"MUS_KillEveryone_2",
-	"MUS_KillEveryone_3",
-	"MUS_KillEveryone_4",
-	"MUS_KillEveryone_5",
-	"MUS_KillEveryone_6",
-	"MUS_KillEveryone_7",
-	"MUS_KillEveryone_8",
-	"MUS_KillEveryone_9"
+RegisterTrack( "MUS_KillEveryone_StartShort1", "Music/KillEveryone/StartShort1.wav" )
+RegisterTrack( "MUS_KillEveryone_StartShort2", "Music/KillEveryone/StartShort2.wav" )
+RegisterTrack( "MUS_KillEveryone_StartShort3", "Music/KillEveryone/StartShort3.wav" )
+
+RegisterTrack( "MUS_KillEveryone_Main_StartPart", "Music/KillEveryone/Main/StartPart.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_1", "Music/KillEveryone/Main/1.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_2", "Music/KillEveryone/Main/2.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_3", "Music/KillEveryone/Main/3.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_4", "Music/KillEveryone/Main/4.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_5", "Music/KillEveryone/Main/5.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_5StraightIntoIt", "Music/KillEveryone/Main/5StraightIntoIt.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_6", "Music/KillEveryone/Main/6.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_7", "Music/KillEveryone/Main/7.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_7x5", "Music/KillEveryone/Main/7x5.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_8", "Music/KillEveryone/Main/8.wav" )
+RegisterTrack( "MUS_KillEveryone_Main_9", "Music/KillEveryone/Main/9.wav" )
+
+RegisterTrack( "MUS_KillEveryone_Continue_1", "Music/KillEveryone/Continue/1.wav" )
+RegisterTrack( "MUS_KillEveryone_Continue_2", "Music/KillEveryone/Continue/2.wav" )
+RegisterTrack( "MUS_KillEveryone_Continue_3", "Music/KillEveryone/Continue/3.wav" )
+RegisterTrack( "MUS_KillEveryone_Continue_4", "Music/KillEveryone/Continue/4.wav" )
+RegisterTrack( "MUS_KillEveryone_Continue_5", "Music/KillEveryone/Continue/5.wav" )
+RegisterTrack( "MUS_KillEveryone_Continue_6", "Music/KillEveryone/Continue/6.wav" )
+
+local SONGS = {
+	"MUS_KillEveryone_Main_StartPart",
+	"MUS_KillEveryone_Main_1",
+	"MUS_KillEveryone_Main_2",
+	"MUS_KillEveryone_Main_3",
+	"MUS_KillEveryone_Main_4",
+	"MUS_KillEveryone_Main_5",
+	"MUS_KillEveryone_Main_5StraightIntoIt",
+	"MUS_KillEveryone_Main_6",
+	"MUS_KillEveryone_Main_7",
+	"MUS_KillEveryone_Main_7x5",
+	"MUS_KillEveryone_Main_8",
+	"MUS_KillEveryone_Main_9"
 }
+
+local NUM_SONGS = #SONGS
+
+
+local CONTINUES = {
+	"MUS_KillEveryone_Continue_1",
+	"MUS_KillEveryone_Continue_2",
+	"MUS_KillEveryone_Continue_3",
+	"MUS_KillEveryone_Continue_4",
+	"MUS_KillEveryone_Continue_5",
+	"MUS_KillEveryone_Continue_6"
+}
+
+local NUM_CONTINUES = #CONTINUES
+
+
+local SHORTSTARTS = {
+	"MUS_KillEveryone_StartShort1",
+	"MUS_KillEveryone_StartShort2",
+	"MUS_KillEveryone_StartShort3"
+}
+
+local NUM_SHORTSTARTS = #SHORTSTARTS
+
 
 local random = math.random
 
@@ -33,7 +76,6 @@ local StopMusic = StopMusic
 local PlayMusic = PlayMusic
 
 local math_Approach = math.Approach
-local Lerp = Lerp
 
 local SysTime = SysTime
 
@@ -43,34 +85,46 @@ DIRECTOR_ALLOCATE_COMBAT_THEME( "DIRECTOR_TRACK_KillEveryone", {
 		if !bCorrect then self.bFade = true end
 		if self.bFade then
 			if flVolumeB > 0 then
-				flVolumeB = flVolumeB < .05 && math_Approach( flVolumeB, 0, flInterval ) || Lerp( .1 * flInterval, flVolumeB, 0 )
+				flVolumeB = math_Approach( flVolumeB, 0, flInterval )
 				return false, flVolumeA, flVolumeB
 			end
 			local flVolumeTransition = self.m_flVolume
 			if flVolumeTransition > 0 then
-				flVolumeTransition = flVolumeTransition < .05 && math_Approach( flVolumeTransition, 0, flInterval ) || Lerp( .1 * flInterval, flVolumeTransition, 0 )
+				flVolumeTransition = math_Approach( flVolumeTransition, 0, flInterval )
 				self.m_flVolume = flVolumeTransition
 				return false, flVolumeA, flVolumeB
 			end
 			// We technically can't be DIRECTOR_THREAT_NULL (this is a combat track), but oh well
 			if self.m_ELayerFrom == DIRECTOR_THREAT_NULL || flVolumeA >= 1 then return 0 end
-			flVolumeA = flVolumeA > .95 && math_Approach( flVolumeA, 1, flInterval ) || Lerp( .1 * flInterval, flVolumeA, 1 )
+			flVolumeA = math_Approach( flVolumeA, 1, flInterval )
 			return false, flVolumeA, 0
 		end
+
 		LoadTrack "MUS_KillEveryone_End"
+
 		local p = self.m_pSource
 		p.m_pTable.Load( p )
+
 		if !self.tHandles.Main then
+			StopMusic( self.m_pSource, "Main" )
+
 			if self.bPartStarted then
 				self.bPartStarted = nil
-				StopMusic( self.m_pSource, "Main" )
 				return true, 0, 1
 			else
-				self.m_pSource.sSong = nil
-				PlayMusic( self, "Main", "MUS_KillEveryone_Start" )
+				if random( 4 ) == 1 then return true, 0, 1 end
+
 				self.bPartStarted = true
+				self.m_pSource.sSong = nil
+
+				if random( 2 ) == 1 then
+					PlayMusic( self, "Main", SHORTSTARTS[ random( 1, NUM_SHORTSTARTS ) ] )
+				else
+					PlayMusic( self, "Main", random( 2 ) == 1 && "MUS_KillEveryone_StartAlt" || "MUS_KillEveryone_Start" )
+				end
 			end
 		end
+
 		return nil, 0, 0
 	end,
 
@@ -97,7 +151,7 @@ DIRECTOR_ALLOCATE_COMBAT_THEME( "DIRECTOR_TRACK_KillEveryone", {
 
 	Load = function( self )
 		if self.sSong then return end
-		local sSong = tSongs[ random( 1, 9 ) ]
+		local sSong = SONGS[ random( 1, NUM_SONGS ) ]
 		self.sSong = sSong
 		LoadTrack( sSong )
 	end,
@@ -113,7 +167,7 @@ DIRECTOR_ALLOCATE_COMBAT_THEME( "DIRECTOR_TRACK_KillEveryone", {
 		// Warm up the next stem so it's ready to roll
 		// This prevents us from warming up all nine (which Source hates),
 		// only warming up one track, plus lets us keep the randomness
-		local sSong = tSongs[ random( 1, 9 ) ]
+		local sSong = SONGS[ random( 1, NUM_SONGS ) ]
 		self.sSong = sSong
 		LoadTrack( sSong )
 	end
